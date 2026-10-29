@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#183b35">
+<title>KIWU 도서관 탐험</title>
+<style>
+:root{
+  --ink:#183b35; --muted:#62716b; --paper:#f7f5ef; --card:#fffefa;
+  --lime:#d8f36a; --line:#e4e7dc; --coral:#f08d70; --shadow:0 18px 50px rgba(24,59,53,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.5}
+button,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.page{max-width:1080px;margin:auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em}
+.brand-mark{display:grid;place-items:center;width:38px;height:38px;background:var(--lime);border-radius:12px;font-size:20px}
+.top-note{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.hero{position:relative;overflow:hidden;background:var(--ink);color:white;border-radius:30px;padding:clamp(28px,6vw,68px);min-height:370px;display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--lime);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--lime)}
+h1{font-size:clamp(38px,6vw,68px);line-height:1.03;letter-spacing:-.065em;margin:20px 0}
+.hero p{max-width:460px;color:#d4dfd8;margin:0 0 26px;font-size:17px}
+.primary,.secondary{border:0;border-radius:999px;padding:14px 22px;font-weight:800;transition:transform .18s,opacity .18s}
+.primary{background:var(--lime);color:var(--ink)}
+.secondary{background:white;color:var(--ink);border:1px solid var(--line)}
+.primary:hover,.secondary:hover{transform:translateY(-2px)}
+.hero-art{position:relative;min-height:240px;display:grid;place-items:center}
+.orbit{width:min(270px,75vw);aspect-ratio:1;border:1px solid rgba(255,255,255,.28);border-radius:50%;display:grid;place-items:center;transform:rotate(-12deg)}
+.book{width:145px;height:180px;background:var(--lime);border-radius:8px 16px 16px 8px;color:var(--ink);padding:18px;box-shadow:15px 18px 0 rgba(0,0,0,.12);transform:rotate(10deg);display:flex;flex-direction:column;justify-content:space-between}
+.book small{font-weight:800;letter-spacing:.12em}
+.book strong{font-size:28px;line-height:1.05;letter-spacing:-.05em}
+.sticker{position:absolute;background:var(--coral);color:var(--ink);padding:11px 15px;border-radius:14px;font-weight:900;transform:rotate(8deg);right:0;bottom:22px}
+.spark{position:absolute;color:var(--lime);font-size:30px}.spark.one{top:20px;left:14%}.spark.two{right:10%;top:35px;font-size:20px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:42px 0 18px}
+.section-head h2{margin:0;font-size:clamp(24px,3vw,34px);letter-spacing:-.045em}
+.section-head p{margin:0;color:var(--muted);font-size:14px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feature{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;min-height:175px}
+.feature .num{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.1em}
+.feature .icon{font-size:28px;margin:18px 0 10px}
+.feature h3{margin:0 0 6px;font-size:18px}
+.feature p{margin:0;color:var(--muted);font-size:14px}
+.quiz-wrap{margin-top:42px;background:#e9eddf;border-radius:28px;padding:clamp(22px,5vw,44px)}
+.quiz-head{display:flex;justify-content:space-between;gap:20px;align-items:start}
+.quiz-head h2{font-size:clamp(26px,4vw,40px);line-height:1.1;letter-spacing:-.05em;margin:0 0 10px}
+.quiz-head p{margin:0;color:var(--muted)}
+.progress-label{font-size:12px;font-weight:800;white-space:nowrap}
+.progress{height:7px;background:#d5dccb;border-radius:99px;margin:24px 0;overflow:hidden}
+.progress-bar{height:100%;width:0;background:var(--ink);border-radius:99px;transition:width .25s}
+.question{font-size:22px;font-weight:800;letter-spacing:-.035em;margin:0 0 16px}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.answer{min-height:100px;text-align:left;background:var(--card);border:1px solid #dbe1d4;border-radius:18px;padding:18px;color:var(--ink);font-weight:800;transition:.18s}
+.answer span{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:7px}
+.answer:hover,.answer:focus-visible{outline:2px solid var(--ink);outline-offset:2px;transform:translateY(-2px)}
+.result{display:none;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;margin-top:20px}
+.result.show{display:block}
+.result-label{display:inline-block;border-radius:999px;background:var(--lime);padding:6px 11px;font-size:12px;font-weight:900}
+.result h3{font-size:30px;letter-spacing:-.05em;margin:14px 0 8px}
+.result p{color:var(--muted);margin:0 0 16px}
+.result-actions{display:flex;flex-wrap:wrap;gap:10px}
+.result-actions a,.result-actions button{display:inline-flex;text-decoration:none;align-items:center;justify-content:center}
+.notice{font-size:12px;color:var(--muted);margin-top:14px}
+.cta{margin-top:26px;background:var(--lime);border-radius:24px;padding:28px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.cta h2{margin:0;font-size:clamp(22px,3vw,30px);letter-spacing:-.04em}
+.cta p{margin:6px 0 0;color:#42534a;font-size:14px}
+.cta .primary{background:var(--ink);color:white;white-space:nowrap}
+footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:24px 2px 8px;color:var(--muted);font-size:12px}
+.hidden{display:none!important}
+@media(max-width:720px){
+ .page{padding:14px}.topbar{padding-bottom:16px}.hero{grid-template-columns:1fr;padding:30px 24px;gap:8px}.hero-art{min-height:200px}.orbit{width:205px}.book{width:115px;height:145px}.book strong{font-size:23px}.sticker{right:9%;bottom:10px}
+ .feature-grid{grid-template-columns:1fr}.feature{min-height:auto}.feature .icon{margin:10px 0 6px}.section-head{display:block}.section-head p{margin-top:7px}
+ .answers{grid-template-columns:1fr}.answer{min-height:0}.quiz-head{display:block}.progress-label{display:block;margin-top:10px}
+ .cta{align-items:flex-start;flex-direction:column}.cta .primary{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">책</span><span>KIWU LIBRARY</span></div>
+    <div class="top-note">Discover your next page</div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> YOUR LIBRARY, YOUR WAY</div>
+      <h1 id="hero-title">도서관을<br>새롭게 발견하다.</h1>
+      <p>책을 찾을 때도, 과제를 준비할 때도, 새로운 관심사를 발견할 때도. 나에게 맞는 도서관 활용법을 탐험해 보세요.</p>
+      <button class="primary" id="start-btn">나의 도서관 유형 찾기 <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <span class="spark one">✳</span><span class="spark two">✦</span>
+      <div class="orbit"><div class="book"><small>KIWU / LIBRARY</small><strong>OPEN<br>A NEW<br>PAGE.</strong><small>READ · FIND · GROW</small></div></div>
+      <div class="sticker">호기심 ON!</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="feature-title">
+    <div class="section-head">
+      <h2 id="feature-title">도서관에서 할 수 있는 것</h2>
+      <p>필요한 순간, 다양한 방법으로 활용해 보세요.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature">
+        <div class="num">01 / FIND</div><div class="icon" aria-hidden="true">⌕</div>
+        <h3>필요한 자료 찾기</h3><p>읽고 싶은 책과 학습에 필요한 자료를 검색해 보세요.</p>
+      </article>
+      <article class="feature">
+        <div class="num">02 / EXPLORE</div><div class="icon" aria-hidden="true">▤</div>
+        <h3>디지털 자료 탐색</h3><p>전자자료와 학술정보 이용 방법을 확인해 보세요.</p>
+      </article>
+      <article class="feature">
+        <div class="num">03 / DISCOVER</div><div class="icon" aria-hidden="true">✳</div>
+        <h3>새로운 관심사 발견</h3><p>평소 궁금했던 주제부터 나만의 읽을거리를 찾아보세요.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="quiz-wrap" id="quiz" aria-labelledby="quiz-title">
+    <div class="quiz-head">
+      <div><h2 id="quiz-title">나는 어떤<br>도서관 탐험가일까?</h2><p>세 가지 질문에 답하고 나에게 맞는 탐험 방향을 확인하세요.</p></div>
+      <div class="progress-label" id="progress-label">QUESTION 1 / 3</div>
+    </div>
+    <div class="progress" aria-label="퀴즈 진행률"><div class="progress-bar" id="progress-bar"></div></div>
+    <div id="question-area">
+      <p class="question" id="question-text">도서관에서 가장 해보고 싶은 것은?</p>
+      <div class="answers" id="answers">
+        <button class="answer" data-value="read">마음에 드는 책 찾기<span>관심 분야를 넓히고 싶어요.</span></button>
+        <button class="answer" data-value="study">과제와 전공 공부<span>믿을 만한 자료가 필요해요.</span></button>
+        <button class="answer" data-value="explore">새로운 서비스 구경<span>몰랐던 기능을 발견하고 싶어요.</span></button>
+      </div>
+    </div>
+    <div class="result" id="result" aria-live="polite">
+      <span class="result-label" id="result-label">MY LIBRARY TYPE</span>
+      <h3 id="result-title"></h3>
+      <p id="result-description"></p>
+      <div class="result-actions">
+        <a class="primary" id="result-link" href="https://library.kiwu.ac.kr/" target="_blank" rel="noopener">도서관 홈페이지 탐험 ↗</a>
+        <button class="secondary" id="restart-btn">다시 해보기</button>
+      </div>
+      <div class="notice">이 결과는 선택에 따라 안내하는 체험형 추천입니다. 실시간 AI 상담이나 개인별 자료 검색 기능은 포함되어 있지 않습니다.</div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div><h2>다음 페이지는 도서관에서.</h2><p>경인여자대학교 도서관 홈페이지에서 자료와 이용 정보를 확인하세요.</p></div>
+    <a class="primary" href="https://library.kiwu.ac.kr/" target="_blank" rel="noopener">도서관 바로가기 ↗</a>
+  </section>
+
+  <footer>
+    <span>경인여자대학교 도서관 · 인터랙티브 홍보물 MVP</span>
+    <span>AI 활용 콘텐츠 시안 · 실제 서비스 정보는 홈페이지에서 확인</span>
+  </footer>
+</main>
+
+<script>
+const questions = [
+  {
+    text: "도서관에서 가장 해보고 싶은 것은?",
+    answers: [
+      {label:"마음에 드는 책 찾기", sub:"관심 분야를 넓히고 싶어요.", value:"read"},
+      {label:"과제와 전공 공부", sub:"믿을 만한 자료가 필요해요.", value:"study"},
+      {label:"새로운 서비스 구경", sub:"몰랐던 기능을 발견하고 싶어요.", value:"explore"}
+    ]
+  },
+  {
+    text: "자료를 찾을 때 나는?",
+    answers: [
+      {label:"흥미로운 주제부터", sub:"우연한 발견이 좋아요.", value:"read"},
+      {label:"정확한 정보부터", sub:"과제에 쓸 자료가 중요해요.", value:"study"},
+      {label:"새로운 방법부터", sub:"검색 팁과 도구가 궁금해요.", value:"explore"}
+    ]
+  },
+  {
+    text: "오늘 도서관에서 얻고 싶은 것은?",
+    answers: [
+      {label:"새로운 읽을거리", sub:"읽고 싶은 책을 발견하기", value:"read"},
+      {label:"학습에 도움 되는 정보", sub:"과제와 전공 공부에 활용하기", value:"study"},
+      {label:"몰랐던 이용 방법", sub:"도서관 서비스를 알아가기", value:"explore"}
+    ]
+  }
+];
+const profiles = {
+  read: {
+    label:"THE CURIOUS READER",
+    title:"호기심 가득, 발견형 탐험가",
+    description:"관심 있는 주제를 따라가며 새로운 책과 분야를 발견해 보세요. 도서 검색에서 익숙한 키워드와 새로운 키워드를 함께 사용하면 탐색의 폭을 넓힐 수 있어요."
+  },
+  study: {
+    label:"THE SMART RESEARCHER",
+    title:"차근차근, 학습형 탐험가",
+    description:"과제와 전공 공부에 필요한 자료를 찾는 데 집중해 보세요. 도서 검색과 학술정보 이용 안내를 확인하고, 자료의 출처와 발행 정보를 함께 살펴보세요."
+  },
+  explore: {
+    label:"THE DIGITAL EXPLORER",
+    title:"새로운 기능을 찾는 디지털 탐험가",
+    description:"도서관 홈페이지의 자료 검색과 전자자료 관련 안내부터 살펴보세요. 평소 이용하지 않았던 메뉴 하나를 골라 직접 탐색해 보는 것이 첫 미션입니다."
+  }
+};
+let step = 0;
+let answersChosen = [];
+const questionText = document.getElementById("question-text");
+const answersEl = document.getElementById("answers");
+const progressBar = document.getElementById("progress-bar");
+const progressLabel = document.getElementById("progress-label");
+const questionArea = document.getElementById("question-area");
+const resultEl = document.getElementById("result");
+
+function renderQuestion(){
+  const q = questions[step];
+  questionText.textContent = q.text;
+  progressLabel.textContent = `QUESTION ${step+1} / ${questions.length}`;
+  progressBar.style.width = `${(step/questions.length)*100}%`;
+  answersEl.replaceChildren();
+  q.answers.forEach(answer => {
+    const button = document.createElement("button");
+    button.className = "answer";
+    button.type = "button";
+    button.innerHTML = "";
+    const label = document.createElement("span");
+    label.textContent = answer.label;
+    label.style.cssText = "display:block;font-size:16px;font-weight:800;color:var(--ink);margin:0";
+    const sub = document.createElement("span");
+    sub.textContent = answer.sub;
+    button.append(label, sub);
+    button.addEventListener("click", () => choose(answer.value));
+    answersEl.appendChild(button);
+  });
+}
+function choose(value){
+  answersChosen.push(value);
+  step++;
+  if(step < questions.length){
+    renderQuestion();
+  }else{
+    showResult();
+  }
+}
+function showResult(){
+  const counts = {read:0,study:0,explore:0};
+  answersChosen.forEach(value => counts[value]++);
+  const winner = Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+  const profile = profiles[winner];
+  questionArea.classList.add("hidden");
+  resultEl.classList.add("show");
+  progressBar.style.width = "100%";
+  progressLabel.textContent = "EXPLORATION COMPLETE";
+  document.getElementById("result-label").textContent = profile.label;
+  document.getElementById("result-title").textContent = profile.title;
+  document.getElementById("result-description").textContent = profile.description;
+  resultEl.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function restart(){
+  step = 0;
+  answersChosen = [];
+  resultEl.classList.remove("show");
+  questionArea.classList.remove("hidden");
+  renderQuestion();
+  document.getElementById("quiz").scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.getElementById("start-btn").addEventListener("click", () => {
+  document.getElementById("quiz").scrollIntoView({behavior:"smooth",block:"start"});
+  document.getElementById("question-text").focus?.();
+});
+document.getElementById("restart-btn").addEventListener("click", restart);
+renderQuestion();
+</script>
+</body>
+</html>
